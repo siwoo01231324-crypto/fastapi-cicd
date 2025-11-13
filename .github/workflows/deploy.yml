@@ -7,6 +7,7 @@ on:
         branches:
             - main
 
+            
 # 개별 작업(job)들 나열
 jobs:
     # deploy(커스텀명) 라는 잡을 하나 설정 -> n개 가능
