@@ -42,8 +42,8 @@ jobs:
                 cat .env
               shell: bash
             # 3. 필요한 파일을 ec2에 복사 (SCP)
-            - name: deploy sourcecode to Ec2
-              uses: appleboy/ssh-action@master
+            - name: Copy sourcecode to Ec2
+              uses: appleboy/scp-action@master
               with: 
                 host: ${{ secrets.EC2_HOST }}
                 username: ${{ secrets.EC2_USERNAME }}
@@ -51,14 +51,14 @@ jobs:
                 port: 22
                 # 지금 appleboy가 안된거같다.
                 # 복사할 대상 지정 - `소스`
-                source: "main.py, requirements.txt, .env, templates"
+                source: .
               
                 # `타겟` 지정 : EC2에 대한 
                 target: "/home/ubuntu/projects"
 
 
             # 4. EC2에 필요한 배포 관련 스크립트 작동 (SSH)
-            - name: deploy sourcecode to Ec2
+            - name: Run Script and Service Restart
               uses: appleboy/ssh-action@master
               with: 
                 host: ${{ secrets.EC2_HOST }}
