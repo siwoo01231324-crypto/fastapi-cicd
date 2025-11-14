@@ -30,10 +30,16 @@ jobs:
                 ls -al
                 cat requirements.txt
               shell: bash
-
+ 
             # 2. 필요시 환경설정 파일 구성(.env)
-            #    GITHUB의 시크릿변수를 통해서 동적 생성(내일 체크)            
-
+            #    GITHUB의 시크릿변수를 통해서 동적 생성(내일 체크) 
+            #    해당 레포지토리 > settint > secret . .....>actions > new repository sectet 버튼 클릭 > 제목, 내용 입력 > 저장
+            - name: 환경변수 파일(.env) 동적생성
+              run: |
+                echo "${{ secrets.APP_ENV }}" >> .env
+                ls -al
+                cat .env
+              shell: bash
             # 3. 필요한 파일을 ec2에 복사 (SCP)
 
             # 4. EC2에 필요한 배포 관련 스크림트 작동 (SSH)
