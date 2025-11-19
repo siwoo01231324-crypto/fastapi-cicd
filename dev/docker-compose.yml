@@ -1,4 +1,3 @@
-version: '3.8'
 
 services:
   # 1. mysql 서비스 구성이 1번이다   -> db
@@ -18,6 +17,22 @@ services:
     networks:
       - my-net 
   # 2. fastapi 서비스 구성이 2번이다 -> was
+  app:                          # 서비스 이름, 코드 내에서 호출시 사용
+    build: ./app                # app이라는 디렉토리 내에 존재하는 dockerfile을 기반으로 빌드
+    container_name: fastapi_app # 컨테이너상 이름
+    restart: unless-stopped
+    ports:                      # 임시구성
+      - "8000:8000"
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 # 앱 실행(도커파일의 CMD or ENTRYPOINT + CMD)
+    volumes:
+      - ./app:/app # 호스트os 경로(개발pc) : 컨테이너상 경로 동기화 
+    environment:
+      DATABASE_URL: "mysql+pymysql://guest:1234@db:3306/memo"
+    networks:
+      - my-net 
+    depends_on:     # 사전에 먼저 구동되어야 할 서비스(의존적인)를 기술
+      - db          # db 서비스가 가동되고 나서, app 서비스를 시작해라
+  
   # 3. nginx 서비스 구성이 3번이다   -> web
 
 # 서비스들이 위치할 네트워크 구성
