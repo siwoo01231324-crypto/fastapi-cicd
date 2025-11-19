@@ -2,10 +2,29 @@ version: '3.8'
 
 services:
   # 1. mysql 서비스 구성이 1번이다   -> db
+  db:
+    image: mysql
+    container_name: mysql_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: memo
+      MYSQL_USER: guest
+      MYSQL_PASSWORD: 1234
+    volumes:
+      - mysql_vol:/var/lib/mysql        # 볼륨 마운트와 컨테이너 특정 경로를 연결함
+    ports:
+      - "3306:3306"
+    networks:
+      - my-net 
   # 2. fastapi 서비스 구성이 2번이다 -> was
   # 3. nginx 서비스 구성이 3번이다   -> web
+
 # 서비스들이 위치할 네트워크 구성
 networks:
+  my-net:
+    driver: bridge
 
 # 볼륨 설정 -> 필요시 호스트 os와 연결 (통상db)
 volumes:
+  mysql_vol:

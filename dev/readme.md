@@ -9,3 +9,9 @@ L app
 L nginx                     
     L nginx.conf            : nginx에서 fastapi로 프록시 하는 구성 (설정파일)
 L docker-compose.yml        : 컴포즈 파일 -> n개의 컨테이너 구성->연결->구동
+
+# 구성 명령
+## 생성 및 실행
+docker-compose up -d --build
+## 종료 및 제거
+docker-compose down
