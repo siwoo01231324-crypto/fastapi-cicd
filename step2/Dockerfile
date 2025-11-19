@@ -11,7 +11,7 @@ ADD web.tar /home/
 
 # url 다운로드 후 추가
 ADD https://raw.githubusercontent.com/ultralytics/yolov5/master/requirements.txt /home/requirements.txt
-
+ 
 # 파일 추가
 ADD readme.md /home/readme2.MD
 
