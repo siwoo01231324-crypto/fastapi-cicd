@@ -1,11 +1,8 @@
 name: Docker 기반 CICD
 
-
 on:
     push:
         branches: [ "dockercompose" ] 
-
-            
 
 jobs:
     # 필요한 키워드 : git build push
@@ -82,6 +79,12 @@ jobs:
                 script: |
                   # 작업 디렉토리 이동 (docker-compose.yml 위치로 이동)
                   cd /home/${{ secrets.EC2_USERNAME }}/deploy/dev
+                  
+                   # 환경변수 생성
+                  echo "DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}" > .env
+                  echo "MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}" >> .env
+                  echo "MYSQL_USER=${{ secrets.MYSQL_USER }}" >> .env
+                  echo "MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }}" >> .env
                   
                   # 최신 이미지 가져오기
                   # 최초 cicd 할때는 이미지를 모두 다운
