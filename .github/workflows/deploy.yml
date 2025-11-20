@@ -38,6 +38,14 @@ jobs:
                 push: true
                 tags: ${{ secrets.DOCKER_USERNAME }}/fastapi-app:latest # 아마존에서 돌아가는 app이름과 맞추기
 
+            - name: Build and Push nginx 앱
+              uses: docker/build-push-action@v4
+              with:
+                # dockerfile의 위치
+                context: ./dev/nginx
+                file: ./dev/nginx/Dockerfile
+                push: true
+                tags: ${{ secrets.DOCKER_USERNAME }}/nginx-proxyLatest
 
             # - name: 환경변수 파일(.env) 동적생성
             #   run: |
