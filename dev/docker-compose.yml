@@ -6,10 +6,10 @@ services:
     # always : 오류로 중단 시, 서버 재부팅 시, (수동 정지 후) -> 무조건 자동 실행
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: 1234 # .env로 대체 가능 -> 시크릿 변수등 체크
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD} 1234 # .env로 대체 가능 -> 시크릿 변수등 체크
       MYSQL_DATABASE: memo
-      MYSQL_USER: guest
-      MYSQL_PASSWORD: 1234
+      MYSQL_USER: ${MYSQL_USER} guest
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD} 1234
     volumes:
       - mysql_vol:/var/lib/mysql     
     ports:
