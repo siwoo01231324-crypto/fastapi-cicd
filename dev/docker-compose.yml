@@ -6,10 +6,10 @@ services:
     # always : 오류로 중단 시, 서버 재부팅 시, (수동 정지 후) -> 무조건 자동 실행
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD} 1234 # .env로 대체 가능 -> 시크릿 변수등 체크
+      MYSQL_ROOT_PASSWORD: ${secrets.MYSQL_ROOT_PASSWORD} 1234 # .env로 대체 가능 -> 시크릿 변수등 체크
       MYSQL_DATABASE: memo
-      MYSQL_USER: ${MYSQL_USER} guest
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD} 1234
+      MYSQL_USER: ${secrets.MYSQL_USER} guest
+      MYSQL_PASSWORD: ${secrets.MYSQL_PASSWORD} 1234
     volumes:
       - mysql_vol:/var/lib/mysql     
     ports:
@@ -20,7 +20,7 @@ services:
     # 도커 허브(일종의 레퍼지토리)를 기반으로 이미지 사용
     # 도커 허브상 계정명/이미지명:태그명
     # 시크릿 변수에서 사용한다는 전제
-    build: ${DOCKER_USERNAME}/fastapi-app:latest
+    build: ${secrets.DOCKER_USERNAME}/fastapi-app:latest
     container_name: fastapi_app 
     restart: always
     command: uvicorn main:app --host 0.0.0.0 --port 8000 
@@ -35,7 +35,7 @@ services:
       - db          
   nginx:
     # 도커 허브 내 커스텀 이미지 활용 
-    image: ${DOCKER_USERNAME}/nginx-proxy:latest # nginx:alpine
+    image: ${secrets.DOCKER_USERNAME}/nginx-proxy:latest # nginx:alpine
     container_name: nginx_proxy
     restart: always
     ports:                      
