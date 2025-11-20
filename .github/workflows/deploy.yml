@@ -45,7 +45,7 @@ jobs:
                 context: ./dev/nginx
                 file: ./dev/nginx/Dockerfile
                 push: true
-                tags: ${{ secrets.DOCKER_USERNAME }}/nginx-proxyLatest
+                tags: ${{ secrets.DOCKER_USERNAME }}/nginx-proxy:latest
 
             # - name: 환경변수 파일(.env) 동적생성
             #   run: |
