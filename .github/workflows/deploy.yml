@@ -68,47 +68,29 @@ jobs:
                 key: ${{ secrets.EC2_KEY }}
                 port: 22
                 source: ./dev/docker-compose.yml
-                target: "/home/${{ secrets.EC2_USERNAME }}/dev"
+                # /home/ubuntu/deploy/dev/docker-compose.yml로 생길것임
+                target: "/home/${{ secrets.EC2_USERNAME }}/deploy"
 
-            # - name: 환경변수 파일(.env) 동적생성
-            #   run: |
-            #     echo "${{ secrets.APP_ENV }}" >> .env
-            #     ls -al
-            #     cat .env
-            #   shell: bash
+            
+            - name: docker-compose up to EC2 via ssh
+              uses: appleboy/ssh-action@master
+              with: 
+                host: ${{ secrets.EC2_HOST }}
+                username: ${{ secrets.EC2_USERNAME }}
+                key: ${{ secrets.EC2_KEY }}
+                port: 22
+                script: |
+                  # 작업 디렉토리 이동 (docker-compose.yml 위치로 이동)
+                  cd /home/${{ secrets.EC2_USERNAME }}/deploy/dev
+                  
+                  # 최신 이미지 가져오기
+                  # 최초 cicd 할때는 이미지를 모두 다운
+                  # 이후 cicd 할때는 변경된 이미지(최신)만 다운로드 
+                  docker-compose pull
 
-            # - name: Copy sourcecode to Ec2
-            #   uses: appleboy/scp-action@master
-            #   with: 
-            #     host: ${{ secrets.EC2_HOST }}
-            #     username: ${{ secrets.EC2_USERNAME }}
-            #     key: ${{ secrets.EC2_KEY }}
-            #     port: 22
-            #     source: .
-              
+                  # 컨테이너 구성
+                  docker-compose up -d
 
-            #     target: "/home/ubuntu/projects"
-
-
-
-            # - name: Run Script and Service Restart
-            #   uses: appleboy/ssh-action@master
-            #   with: 
-            #     host: ${{ secrets.EC2_HOST }}
-            #     username: ${{ secrets.EC2_USERNAME }}
-            #     key: ${{ secrets.EC2_KEY }}
-            #     port: 22
-            #     script: |
-            #       # 1차로 ec2 세팅을 진행하고 나서 CI/CD 
-            #       # ec2에 접속하고 나서 진행할 업무 기술
-            #       # 해당 프로젝트 폴더로 이동(cd)
-            #       cd /home/ubuntu/projects
-
-            #       # 현재 프로젝트 내 파일을 확인
-            #       ls -al
-                
-            #       # 추가(최초)로 설치된 패키지를 설치
-            #       # 가상환경을 구동하지 않고, 가상환경의 명령어 직접 사용 가상환경(web)
-            #       ./web/bin/pip install -r requirements.txt
-            #       # uvicorn 서비스를 재가동(재시작 : restart) -> sudo
-            #       sudo systemctl restart hello.service
+                  # docker-compose yml 구성이 변경되어서, 
+                  # 이미지가 미사용되는것이 있을 수 있음 -> 공간확보
+                  docker image prune -f
