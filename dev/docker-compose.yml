@@ -35,7 +35,7 @@ services:
       - db          
   nginx:
     # 도커 허브 내 커스텀 이미지 활용 
-    image: ${DOCKER_USERNAME}/nginx-proxyLatest # nginx:alpine
+    image: ${DOCKER_USERNAME}/nginx-proxy:latest # nginx:alpine
     container_name: nginx_proxy
     restart: always
     ports:                      

@@ -9,7 +9,7 @@ on:
 
 jobs:
     # 필요한 키워드 : git build push
-    build-deploy:
+    docker-build-deploy:
         runs-on: ubuntu-latest
         steps:        
             - name: 코드 Checkout
@@ -37,15 +37,38 @@ jobs:
                 file: ./dev/app/Dockerfile
                 push: true
                 tags: ${{ secrets.DOCKER_USERNAME }}/fastapi-app:latest # 아마존에서 돌아가는 app이름과 맞추기
-
+                
+                # 커스텀된 nginx 이미지 생성 및 도커허브 푸쉬
             - name: Build and Push nginx 앱
               uses: docker/build-push-action@v4
               with:
-                # dockerfile의 위치
                 context: ./dev/nginx
                 file: ./dev/nginx/Dockerfile
                 push: true
                 tags: ${{ secrets.DOCKER_USERNAME }}/nginx-proxy:latest
+
+    # 2. EC2에 배포
+    EC2-deploy:
+        # 반드시 사전에 fastapi, nginx 이미지가 도커허브에 등록되어있어야 함
+        needs: docker-build-deploy
+        runs-on: ubuntu-latest
+        steps:
+          # 새로운 잡에서 새롭게 리눅스 할당, 소스코드를 체크아웃함 체크아웃이 파일 다 가져오는거임 생각해라
+            - name: 코드 Checkout
+              uses: actions/checkout@v3
+
+          # 아래 파일은 소스코드를 체크아웃함으로써 획득할 수 있다.
+          # AWS 의 EC2에 docker-compose.yml 파일을 업로드하려고 
+          # uses: appleboy/scp-action@master => EC2에 파일 카피 기능 제공 도구
+            - name: Copy docker-compose.yml to Ec2
+              uses: appleboy/scp-action@master
+              with: 
+                host: ${{ secrets.EC2_HOST }}
+                username: ${{ secrets.EC2_USERNAME }}
+                key: ${{ secrets.EC2_KEY }}
+                port: 22
+                source: ./dev/docker-compose.yml
+                target: "/home/${{ secrets.EC2_USERNAME }}/dev"
 
             # - name: 환경변수 파일(.env) 동적생성
             #   run: |
