@@ -15,3 +15,13 @@ L docker-compose.yml        : 컴포즈 파일 -> n개의 컨테이너 구성->�
 docker-compose up -d --build
 ## 종료 및 제거
 docker-compose down
+
+# 시크릿 변수
+MYSQL_ROOT_PASSWORD
+MYSQL_USER
+MYSQL_PASSWORD
+DOCKER_USERNAME
+DOCKER_PASSWORD
+EC2_HOST
+EC2_USERNAME
+EC2_KEY
